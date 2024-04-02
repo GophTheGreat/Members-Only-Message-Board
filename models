@@ -1,0 +1,13 @@
+Members 
+  * Full name
+  * Username (email)
+  * Password
+  * Membership Status (bool true/false)
+  * Admin (need secret password? bool true/false)
+
+
+Post
+  * Title
+  * Timestamp
+  * Text
+  * Author (member object)
