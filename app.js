@@ -4,11 +4,29 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose')
+const session = require("express-session");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+
+const mongodb = "mongodb+srv://tealeverywhere:g0ph3rit@cluster0.87fskqd.mongodb.net/membersonly?retryWrites=true&w=majority&appName=Cluster0"
+
+mongoose.connect(mongodb);
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "mongo connection error"));
+
+app.use(session({ secret: "cats", resave: false, saveUninitialized: true }));
+app.use(passport.session());
+
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  next();
+});
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -42,43 +60,48 @@ app.use(function(err, req, res, next) {
 
 ////////
 
-app.post(
-  "/log-in",
-  passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/"
-  })
-);
+// app.use((req, res, next) => {
+//   res.locals.currentUser = req.user;
+//   next();
+// });
 
-passport.use(
-  new LocalStrategy(async (username, password, done) => {
-    try {
-      const match = await bcrypt.compare(password, user.password);
-      const user = await User.findOne({ username: username });
-      if (!user) {
-        return done(null, false, { message: "Incorrect username" });
-      };
-      if (!match) {
-        return done(null, false, { message: "Incorrect password" });
-      }
-      return done(null, user);
-    } catch(err) {
-      return done(err);
-    };
-  })
-);
+// app.post(
+//   "/log-in",
+//   passport.authenticate("local", {
+//     successRedirect: "/",
+//     failureRedirect: "/"
+//   })
+// );
 
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
+// passport.use(
+//   new LocalStrategy(async (username, password, done) => {
+//     try {
+//       const match = await bcrypt.compare(password, user.password);
+//       const user = await User.findOne({ username: username });
+//       if (!user) {
+//         return done(null, false, { message: "Incorrect username" });
+//       };
+//       if (!match) {
+//         return done(null, false, { message: "Incorrect password" });
+//       }
+//       return done(null, user);
+//     } catch(err) {
+//       return done(err);
+//     };
+//   })
+// );
 
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await User.findById(id);
-    done(null, user);
-  } catch(err) {
-    done(err);
-  };
-});
+// passport.serializeUser((user, done) => {
+//   done(null, user.id);
+// });
+
+// passport.deserializeUser(async (id, done) => {
+//   try {
+//     const user = await User.findById(id);
+//     done(null, user);
+//   } catch(err) {
+//     done(err);
+//   };
+// });
 
 module.exports = app;
