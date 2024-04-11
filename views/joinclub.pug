@@ -1,0 +1,14 @@
+extends layout 
+
+block content
+  h1 Are you one of the 'ELITE'? Join the club!
+  form(method='POST')
+    div.form-group
+      label(for='secret') Enter the secret password
+      input#secret.form-control(type='text' name='secret' required)
+    button.btn.btn-primary(type='submit') Submit
+
+  if errors
+    ul
+      for error in errors
+        li!= error.msg

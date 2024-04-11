@@ -41,13 +41,10 @@ exports.user_create_post = [
     .withMessage("Password must contain at least one uppercase letter")
     .matches(/^(?=.*[^\w\s])/)
     .withMessage("Password must contain at least one special character (!@#$%^&*()_+{}|:<>?)"),
-    //TODO Add password confirmation sanitizer
-    //
-    //
-    //
-    //
-    //
-    //
+  body("confirmpassword")
+    .trim()
+    .custom((value, {req}) => {return value === req.body.password;})
+    .withMessage("Passwords must match"),
 
   // Process request after validation and sanitization.
   asyncHandler(async (req, res, next) => {
@@ -62,7 +59,6 @@ exports.user_create_post = [
       username: req.body.username,
       password: req.body.password
     })
-
     
     if(!errors.isEmpty()) {
       //There are errors. Render the form again with sanitized inputs and error messages
