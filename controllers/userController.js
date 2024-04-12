@@ -2,11 +2,15 @@
 const User = require("../models/user");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const passport = require("passport");
 
+
+//GET for sign up page
 exports.user_create_get = asyncHandler(async(req, res, next) => {
   res.render('signup')
 })
 
+//POST for sign up page
 exports.user_create_post = [
   //Validate and sanitize fields
   body("first_name")
@@ -75,3 +79,12 @@ exports.user_create_post = [
     }
   })
 ];
+
+exports.user_login_get = asyncHandler(async(req, res, next) => {
+  res.render('login')
+})
+
+exports.user_login_post = passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login'
+})

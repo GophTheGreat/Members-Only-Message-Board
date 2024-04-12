@@ -7,6 +7,8 @@ var mongoose = require('mongoose')
 const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const bcrypt = require('bcrypt');
+const User = require('./models/user');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -26,7 +28,6 @@ app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   next();
 });
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -57,51 +58,35 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+passport.use(
+  new LocalStrategy(async (username, password, done) => {
+    try {
+      const user = await User.findOne({ username: username });
+      const match = await bcrypt.compare(password, user.password);
+      if (!user) {
+        return done(null, false, { message: "Incorrect username" });
+      };
+      if (!match) {
+        return done(null, false, { message: "Incorrect password" });
+      }
+      return done(null, user);
+    } catch(err) {
+      return done(err);
+    };
+  })
+);
 
-////////
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
 
-// app.use((req, res, next) => {
-//   res.locals.currentUser = req.user;
-//   next();
-// });
-
-// app.post(
-//   "/log-in",
-//   passport.authenticate("local", {
-//     successRedirect: "/",
-//     failureRedirect: "/"
-//   })
-// );
-
-// passport.use(
-//   new LocalStrategy(async (username, password, done) => {
-//     try {
-//       const match = await bcrypt.compare(password, user.password);
-//       const user = await User.findOne({ username: username });
-//       if (!user) {
-//         return done(null, false, { message: "Incorrect username" });
-//       };
-//       if (!match) {
-//         return done(null, false, { message: "Incorrect password" });
-//       }
-//       return done(null, user);
-//     } catch(err) {
-//       return done(err);
-//     };
-//   })
-// );
-
-// passport.serializeUser((user, done) => {
-//   done(null, user.id);
-// });
-
-// passport.deserializeUser(async (id, done) => {
-//   try {
-//     const user = await User.findById(id);
-//     done(null, user);
-//   } catch(err) {
-//     done(err);
-//   };
-// });
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch(err) {
+    done(err);
+  };
+});
 
 module.exports = app;
