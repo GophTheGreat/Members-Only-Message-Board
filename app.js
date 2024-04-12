@@ -15,6 +15,10 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+//Test user is:
+//qwerty
+//aAsSdDfF1!
+
 const mongodb = "mongodb+srv://tealeverywhere:g0ph3rit@cluster0.87fskqd.mongodb.net/membersonly?retryWrites=true&w=majority&appName=Cluster0"
 
 mongoose.connect(mongodb);

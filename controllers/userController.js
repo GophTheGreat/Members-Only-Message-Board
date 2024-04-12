@@ -88,3 +88,12 @@ exports.user_login_post = passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/login'
 })
+
+exports.user_logout = asyncHandler((req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+});

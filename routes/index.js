@@ -14,9 +14,12 @@ router.get('/sign-up', user_controller.user_create_get);
 router.post('/sign-up', user_controller.user_create_post);
 
 //GET log in page
-router.get('/log-in', user_controller.user_login_get);
+router.get('/login', user_controller.user_login_get);
 
 //GET log in page
-router.post('/log-in', user_controller.user_login_post);
+router.post('/login', user_controller.user_login_post);
+
+//GET log out
+router.get('/logout', user_controller.user_logout)
 
 module.exports = router;
