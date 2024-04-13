@@ -6,3 +6,5 @@ block content
 
   if user 
     p You are #{user.username}. Welcome.
+    if user.membership === true 
+      p You are a member. You may post. 

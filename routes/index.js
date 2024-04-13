@@ -20,6 +20,12 @@ router.get('/login', user_controller.user_login_get);
 router.post('/login', user_controller.user_login_post);
 
 //GET log out
-router.get('/logout', user_controller.user_logout)
+router.get('/logout', user_controller.user_logout);
+
+//GET join the club
+router.get('/joinclub', user_controller.user_joinclub_get);
+
+//POST joint he club
+router.post('/joinclub', user_controller.user_joinclub_post);
 
 module.exports = router;

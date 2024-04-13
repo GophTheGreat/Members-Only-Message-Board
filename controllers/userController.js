@@ -61,7 +61,9 @@ exports.user_create_post = [
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       username: req.body.username,
-      password: req.body.password
+      password: req.body.password,
+      membership: false,
+      admin: false
     })
     
     if(!errors.isEmpty()) {
@@ -80,15 +82,18 @@ exports.user_create_post = [
   })
 ];
 
+//GET for log in page
 exports.user_login_get = asyncHandler(async(req, res, next) => {
   res.render('login')
 })
 
+//POST for log in page
 exports.user_login_post = passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/login'
 })
 
+//GET for logging out
 exports.user_logout = asyncHandler((req, res, next) => {
   req.logout((err) => {
     if (err) {
@@ -97,3 +102,41 @@ exports.user_logout = asyncHandler((req, res, next) => {
     res.redirect("/");
   });
 });
+
+//GET for joining the club
+exports.user_joinclub_get = asyncHandler((req, res, next) => {
+  res.render('joinclub');
+})
+
+//POST for joining the club
+exports.user_joinclub_post = [
+  //Validate and sanitize fields
+  body("secret")
+    .trim()
+    .escape()
+    .matches(/^the password is password$/)
+    .withMessage("Nope, that's not the secret passcode!"),
+
+    asyncHandler(async (req, res, next) => {
+    //Extract the validation errors from the request
+    const errors = validationResult(req);
+    console.log("Request Body:", req.body);
+
+    if(!errors.isEmpty()) {
+      //There are errors. Render the form again with sanitized inputs and error messages
+      res.render("joinclub", {
+        errors: errors.array(),
+      });
+      return;
+    }
+    else {
+      //Data from the form is valid
+
+      //If there's no "membership" field, add it and make it true. If there is and it's false, make it true
+      req.user.membership = true;
+      //Save the user
+      await req.user.save();
+      res.redirect('/');
+    }
+    })
+]
