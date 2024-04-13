@@ -7,4 +7,7 @@ block content
   if user 
     p You are #{user.username}. Welcome.
     if user.membership === true 
-      p You are a member. You may post. 
+      p You are a member. You may post.
+      form(action="", method="post") 
+        textarea#postbox(name="post", cols="30", rows="10") 
+        button#postbutton(type="submit") Create Post
