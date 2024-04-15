@@ -18,6 +18,7 @@ var app = express();
 //Test user is:
 //qwerty
 //aAsSdDfF1!
+//the password is password
 
 const mongodb = "mongodb+srv://tealeverywhere:g0ph3rit@cluster0.87fskqd.mongodb.net/membersonly?retryWrites=true&w=majority&appName=Cluster0"
 

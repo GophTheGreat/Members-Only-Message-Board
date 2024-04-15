@@ -8,6 +8,21 @@ block content
     p You are #{user.username}. Welcome.
     if user.membership === true 
       p You are a member. You may post.
-      form(action="", method="post") 
-        textarea#postbox(name="post", cols="30", rows="10") 
-        button#postbutton(type="submit") Create Post
+      form(action="/", method="POST") 
+        label(for="title") Post Title 
+        input#posttitlebox(type="text", name="title" required)
+        label(for="post") Message 
+        textarea#postbox(name="post", cols="30", rows="10" required) 
+        button#postbutton.btn.btn-primary(type="submit") Create Post
+      hr
+      for post in allPosts 
+        p #{post.title}
+        p by #{post.author.username}
+        p #{post.text}
+        p at #{post.timestamp_formatted}
+        hr
+  else 
+    for post in allPosts 
+      p #{post.title}
+      p #{post.text}
+      hr

@@ -2,10 +2,13 @@ var express = require('express');
 var router = express.Router();
 
 const user_controller = require("../controllers/userController");
+const post_controller = require("../controllers/postController");
+
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Anonymous Clubhouse', user: req.user });
-});
+router.get('/', post_controller.index_get);
+
+/* POST a message from home page form. */
+router.post('/', post_controller.index_post);
 
 //GET sign up page
 router.get('/sign-up', user_controller.user_create_get);
